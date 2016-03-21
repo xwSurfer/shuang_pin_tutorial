@@ -111,6 +111,14 @@ end
 
 def get_right_answer(res)
   right=''
+  if LEGAL_COMPOSITE[:O].include? res
+    # 说明是韵母单音节字
+    right<<'O'
+    get(res, right)
+    return right
+  end
+
+
   d_pre = res.strip[0..1]
   if %w(zh ch sh).include? d_pre
     get(d_pre, right)
@@ -118,18 +126,11 @@ def get_right_answer(res)
     get(d_next, right)
   else
     d_pre = res.strip[0]
-
-    if not VALID_COMPOSITE.key? d_pre.upcase.to_sym
-      # 说明是韵母单音节字
-      right<<'O'
-      get(res, right)
-    else
-      get(d_pre, right)
-      d_next = res.strip[1...res.length]
-      get(d_next, right)
-    end
-
+    get(d_pre, right)
+    d_next = res.strip[1...res.length]
+    get(d_next, right)
   end
+
   right
 end
 
