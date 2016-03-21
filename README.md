@@ -8,5 +8,6 @@
 ````
 ruby shuang_pin_tutorial.rb
 ````
-![](https://github.com/xwSurfer/shuang_pin_tutorial/blob/master/img1.png)
+
+![image](https://github.com/xwSurfer/shuang_pin_tutorial/blob/master/img1.png)
 
