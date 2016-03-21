@@ -8,3 +8,5 @@
 ````
 ruby shuang_pin_tutorial.rb
 ````
+![](img1.png)
+
