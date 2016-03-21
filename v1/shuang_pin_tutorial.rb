@@ -1,12 +1,14 @@
+COUNT = 5
+
 # 声母列表 23 个 + 一个特殊的声母 o 用来输入单音节的韵母字
-sheng_mu = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q',
+SHENG_MU = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q',
             'x', 'zh', 'ch', 'sh', 'z', 'c', 's ', ' y', 'w', 'r', 'o']
 # 韵母列表 24 个
 # yun_mu=['a', 'o', 'e', 'i', 'u', 'v', 'ai ', 'ei', ' ui ', 'ao', ' ou',
 #         ' iu ', 'ie ', 've', ' er', ' an ', 'en ', 'in', ' un ', 'vn ', 'ang ', 'eng', ' ing ', 'ong']
 
 # 声母对应合法的韵母组合
-legal_composite= {
+LEGAL_COMPOSITE= {
     :B => %w(a ai an ang ao ei en eng i ian iao ie in ing o u),
     :C => %w(a ai an ang ao e en eng i ong ou u uan ui un uo),
     :CH => %w(a ai an ang ao e en eng i ong ou u ua uai uan uang ui un uo),
@@ -35,8 +37,8 @@ legal_composite= {
 
 
 # 每个按键对应的双拼表
-valid_composite={
-    :Q => %w(q, iu),
+VALID_COMPOSITE={
+    :Q => %w(q iu),
     :W => %w(w ia ua),
     :E => %w(e),
     :R => %w(r uan er),
@@ -66,74 +68,123 @@ valid_composite={
 }
 
 
-# TODO 解决类似“安”的 an 单读音的情况,单读音比如 an的输入要使用 输入oan
+def rand_words
+  result = ''
+  COUNT.times do
+    sheng =SHENG_MU.sample
+    yun = LEGAL_COMPOSITE[sheng.strip.upcase.to_sym].sample
+    if sheng =='o'
+      result<<" #{yun.strip} "
+    else
+      result<<" #{sheng.strip}#{yun.strip} "
+    end
+  end
+  result
+end
 
-# 随机组合
-result = ''
-5.times do
-  sheng =sheng_mu.sample
-  yun = legal_composite[sheng.strip.upcase.to_sym].sample
-  if sheng =='o'
-    result<<" #{yun.strip} "
+
+puts "请输入下面对应双拼规则 使用空格隔开, 退出输入 exit \n"
+
+
+def judge(incorrect, input_answer, result)
+  if incorrect.length == 0
+    puts '恭喜你全对耶!'
   else
-    result<<" #{sheng.strip}#{yun.strip} "
+    incorrect.each { |key, value|
+      puts "#{key} 错误 => #{value}"
+    }
+  end
+
+  if input_answer.split.length<result.split.length
+    puts '你好像有几个没有写完哦!'
   end
 end
 
-puts "请输入下面对应双拼规则 使用空格隔开\n#{result}"
-
-# 错误的字
-incorrect ={}
-
-
-input_answer = gets
-input_answer.split.each_with_index { |input_keys, index|
-
-  if input_keys.length!=2
-    incorrect["#{index+1}.#{input_keys}"] = '双拼只能由两个字母组合而成!'
-    next
-  end
-
-  answers=[]
-  catch :for_loop do
-    # 根据输入的组合找出对应双拼数组
-    input_keys.split(//).each { |k|
-      k=k.strip
-      if k==';'
-        answer=valid_composite[k]
-      else
-        answer=valid_composite[k.upcase.to_sym]
-      end
-      answers<<answer
-    }
-
-    # 根据得到的双拼二维数组看能不能得到对应值
-    an1 = answers[0]
-    an2 = answers[1]
-    res = result.split[index]
-    an1.each { |a1|
-      an2.each { |a2|
-        if (a1+a2)==res
-          throw :for_loop
-          break
-        end
-      }
-    }
-    # TODO 给出正确答案
-    incorrect["#{index+1}.#{input_keys}"] = "不能得到 #{res} 哦!"
-  end
-}
-
-if incorrect.length == 0
-  puts '恭喜你全对耶!'
-else
-  incorrect.each { |key, value|
-    puts "#{key} 错误 => #{value}"
+def get(word, right)
+  VALID_COMPOSITE.each { |key, value|
+    if value.include? word
+      right<<key.to_s
+      break
+    end
   }
 end
 
-if input_answer.split.length<result.split.length
-  puts '你好像有几个没有写完哦!'
+def get_right_answer(res)
+  right=''
+  d_pre = res.strip[0..1]
+  if %w(zh ch sh).include? d_pre
+    get(d_pre, right)
+    d_next = res.strip[2...res.length]
+    get(d_next, right)
+  else
+    d_pre = res.strip[0]
+
+    if not VALID_COMPOSITE.key? d_pre.to_sym
+      # 说明是韵母单音节字
+      right<<'O'
+      get(res, right)
+    else
+      get(d_pre, right)
+      d_next = res.strip[1...res.length]
+      get(d_next, right)
+    end
+
+  end
+  right
 end
 
+
+# main
+while true
+  result = 'an e o ou eng'
+  puts "\n#{result}"
+  input_answers = gets
+
+  if input_answers.strip == 'exit'
+    abort('好棒好棒!')
+  end
+  # 随机组合
+  # 错误的字
+  incorrect ={}
+
+  input_answers.split.each_with_index { |input_keys, index|
+
+    if input_keys.length!=2
+      incorrect["#{index+1}.#{input_keys}"] = '双拼只能由两个字母组合而成!'
+      next
+    end
+
+    input_a=[]
+    catch :for_loop do
+      # 根据输入的组合找出对应双拼数组
+      input_keys.split(//).each { |k|
+        k=k.strip
+        if k==';'
+          answer=VALID_COMPOSITE[k]
+        else
+          answer=VALID_COMPOSITE[k.upcase.to_sym]
+        end
+        input_a<<answer
+      }
+
+      # 根据得到的双拼二维数组看能不能得到对应值
+      an1 = input_a[0]
+      an2 = input_a[1]
+      res = result.split[index]
+      an1.each { |a1|
+        an2.each { |a2|
+          if (a1+a2)==res
+            throw :for_loop
+            break
+          end
+        }
+      }
+      right_answer= get_right_answer(res)
+
+      incorrect["#{index+1}.#{input_keys}"] = "不能得到 #{res} 哦! 或许你可以试试 #{right_answer}"
+    end
+  }
+  judge(incorrect, input_answers, result)
+
+end
 
