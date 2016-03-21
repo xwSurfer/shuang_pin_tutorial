@@ -119,7 +119,7 @@ def get_right_answer(res)
   else
     d_pre = res.strip[0]
 
-    if not VALID_COMPOSITE.key? d_pre.to_sym
+    if not VALID_COMPOSITE.key? d_pre.upcase.to_sym
       # 说明是韵母单音节字
       right<<'O'
       get(res, right)
