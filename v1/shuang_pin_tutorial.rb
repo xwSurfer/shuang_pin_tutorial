@@ -136,7 +136,7 @@ end
 
 # main
 while true
-  result = 'an e o ou eng'
+  result = rand_words
   puts "\n#{result}"
   input_answers = gets
 
