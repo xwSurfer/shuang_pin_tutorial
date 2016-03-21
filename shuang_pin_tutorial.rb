@@ -74,9 +74,9 @@ def rand_words
     sheng =SHENG_MU.sample
     yun = LEGAL_COMPOSITE[sheng.strip.upcase.to_sym].sample
     if sheng =='o'
-      result<<" #{yun.strip} "
+      result<<"#{yun.strip} "
     else
-      result<<" #{sheng.strip}#{yun.strip} "
+      result<<"#{sheng.strip}#{yun.strip} "
     end
   end
   result
