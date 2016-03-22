@@ -157,7 +157,7 @@ while true
 
     res = result.split[index]
     right_answer= get_right_answer(res)
-    unless right_answer==input_keys
+    unless right_answer.casecmp(input_keys.to_s)==0
       incorrect["#{index+1}.#{input_keys}"] = "不能得到 #{res} 哦! 或许你可以试试 #{right_answer}"
     end
   }
