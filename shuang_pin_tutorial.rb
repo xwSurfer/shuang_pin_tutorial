@@ -155,33 +155,9 @@ while true
       next
     end
 
-    input_a=[]
-    catch :for_loop do
-      # 根据输入的组合找出对应双拼数组
-      input_keys.split(//).each { |k|
-        k=k.strip
-        if k==';'
-          answer=VALID_COMPOSITE[k]
-        else
-          answer=VALID_COMPOSITE[k.upcase.to_sym]
-        end
-        input_a<<answer
-      }
-
-      # 根据得到的双拼二维数组看能不能得到对应值
-      an1 = input_a[0]
-      an2 = input_a[1]
-      res = result.split[index]
-      an1.each { |a1|
-        an2.each { |a2|
-          if (a1+a2)==res
-            throw :for_loop
-            break
-          end
-        }
-      }
-      right_answer= get_right_answer(res)
-
+    res = result.split[index]
+    right_answer= get_right_answer(res)
+    unless right_answer==input_keys
       incorrect["#{index+1}.#{input_keys}"] = "不能得到 #{res} 哦! 或许你可以试试 #{right_answer}"
     end
   }
