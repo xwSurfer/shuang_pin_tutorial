@@ -1,5 +1,6 @@
 COUNT = 5
 TIP_ENABLE = true
+SEPARATOR='|||'
 
 # 声母列表 23 个 + 一个特殊的声母 o 用来输入单音节的韵母字
 SHENG_MU = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q',
@@ -96,7 +97,7 @@ def judge(incorrect, input_answer, result)
     }
   end
 
-  if input_answer.split.length<result.split.length
+  if input_answer.split.length < result.split(SEPARATOR)[0].split.length
     puts '你好像有几个没有写完哦!'
   end
 end
@@ -138,7 +139,7 @@ end
 def question
   result = rand_words
   if (TIP_ENABLE)
-    result << '      ( '
+    result << "   #{SEPARATOR}   ( "
     result.split.each { |res|
       an = get_right_answer(res)
       result << "#{an} "
