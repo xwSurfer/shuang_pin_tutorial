@@ -52,7 +52,7 @@ VALID_COMPOSITE={
     :P => %w(p un),
     :A => %w(a),
     :S => %w(s ong iong),
-    :D => %w(d ang iang),
+    :D => %w(d uang iang),
     :F => %w(f en),
     :G => %w(g eng),
     :H => %w(h ang),
@@ -70,9 +70,9 @@ VALID_COMPOSITE={
 }
 
 
-def rand_words
+def rand_words(num = COUNT)
   result = ''
-  COUNT.times do
+  num.times do
     sheng =SHENG_MU.sample
     yun = LEGAL_COMPOSITE[sheng.strip.upcase.to_sym].sample
     if sheng =='o'
@@ -137,8 +137,8 @@ def get_right_answer(res)
 end
 
 def question
-  result = rand_words
-  if (TIP_ENABLE)
+  result =rand_words
+  if TIP_ENABLE
     result << "   #{SEPARATOR}   ( "
     result.split.each { |res|
       an = get_right_answer(res)
