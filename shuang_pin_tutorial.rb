@@ -1,4 +1,5 @@
 COUNT = 5
+TIP_ENABLE = true
 
 # 声母列表 23 个 + 一个特殊的声母 o 用来输入单音节的韵母字
 SHENG_MU = ['b', 'p', 'm', 'f', 'd', 't', 'n', 'l', 'g', 'k', 'h', 'j', 'q',
@@ -134,11 +135,24 @@ def get_right_answer(res)
   right
 end
 
+def question
+  result = rand_words
+  if (TIP_ENABLE)
+    result << '      ( '
+    result.split.each { |res|
+      an = get_right_answer(res)
+      result << "#{an} "
+    }
+    result << ' ) '
+  end
+  result
+end
 
 # main
 while true
-  result = rand_words
+  result = question
   puts "\n#{result}"
+
   input_answers = gets
 
   if input_answers.strip == 'exit'
